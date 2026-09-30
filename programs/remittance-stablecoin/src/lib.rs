@@ -1,7 +1,9 @@
 use anchor_lang::prelude::*;
 use anchor_lang::solana_program::program::invoke;
 use anchor_lang::solana_program::system_instruction;
-use spl_token_2022::extension::ExtensionType;
+use spl_token_2022::extension::{
+    transfer_fee::TransferFeeConfig, BaseStateWithExtensions, ExtensionType, StateWithExtensions,
+};
 
 declare_id!("KChY5fYCcqXS9uiY3daKx3fctBPTa1aQKfuJ8MkD1gz");
 
@@ -150,6 +152,113 @@ pub mod remittance_stablecoin {
 
         Ok(())
     }
+
+    /// Checked transfer with the Token-2022 transfer fee withheld to the mint.
+    /// `expected_fee` must equal the fee the mint's TransferFeeConfig computes
+    /// for the current epoch — a client lying about the fee fails here.
+    /// The mint itself performs the authoritative fee calculation; we only gate
+    /// the max, so the mint is passed writable and read via StateWithExtensions
+    /// (NEVER raw Mint::unpack — the account carries extensions).
+    pub fn transfer_with_fee(
+        ctx: Context<TransferWithFee>,
+        amount: u64,
+        expected_fee: u64,
+    ) -> Result<()> {
+        let token_program = ctx.accounts.token_program.key();
+
+        let mint_data = ctx.accounts.mint.try_borrow_data()?;
+        let state = StateWithExtensions::<spl_token_2022::state::Mint>::unpack(&mint_data)
+            .map_err(|_| error!(ErrorCode::InvalidMintState))?;
+        let decimals = state.base.decimals;
+        let fee_config = state
+            .get_extension::<TransferFeeConfig>()
+            .map_err(|_| error!(ErrorCode::MissingTransferFeeConfig))?;
+        let epoch = Clock::get()?.epoch;
+        // calculate_epoch_fee returns Option<u64> (None on overflow) — keep it
+        // checked, no unwrap on user-controlled `amount`.
+        let fee = fee_config
+            .calculate_epoch_fee(epoch, amount)
+            .ok_or_else(|| error!(ErrorCode::FeeMismatch))?;
+        drop(mint_data);
+
+        require!(expected_fee == fee, ErrorCode::FeeMismatch);
+
+        invoke(
+            &spl_token_2022::extension::transfer_fee::instruction::transfer_checked_with_fee(
+                &token_program,
+                &ctx.accounts.source.key(),
+                &ctx.accounts.mint.key(),
+                &ctx.accounts.destination.key(),
+                &ctx.accounts.authority.key(),
+                &[],
+                amount,
+                decimals,
+                expected_fee,
+            )?,
+            &[
+                ctx.accounts.source.to_account_info(),
+                ctx.accounts.mint.to_account_info(),
+                ctx.accounts.destination.to_account_info(),
+                ctx.accounts.authority.to_account_info(),
+            ],
+        )?;
+
+        Ok(())
+    }
+
+    /// Thaws ONE token account (freeze authority signed). Per-account control:
+    /// every other new account stays frozen (DefaultAccountState).
+    pub fn thaw_account(ctx: Context<ThawAccount>) -> Result<()> {
+        invoke(
+            &spl_token_2022::instruction::thaw_account(
+                &ctx.accounts.token_program.key(),
+                &ctx.accounts.token_account.key(),
+                &ctx.accounts.mint.key(),
+                &ctx.accounts.freeze_authority.key(),
+                &[],
+            )?,
+            &[
+                ctx.accounts.token_account.to_account_info(),
+                ctx.accounts.mint.to_account_info(),
+                ctx.accounts.freeze_authority.to_account_info(),
+            ],
+        )?;
+
+        Ok(())
+    }
+}
+
+#[derive(Accounts)]
+pub struct TransferWithFee<'info> {
+    /// Holder sending tokens; must be the source account owner.
+    pub authority: Signer<'info>,
+    /// CHECK: token account, validated by the Token-2022 CPI (owner + frozen state).
+    #[account(mut)]
+    pub source: UncheckedAccount<'info>,
+    /// CHECK: the mint, writable because transfer_checked_with_fee records the
+    /// withheld fee; state read above via StateWithExtensions.
+    #[account(mut)]
+    pub mint: UncheckedAccount<'info>,
+    /// CHECK: token account, validated by the Token-2022 CPI.
+    #[account(mut)]
+    pub destination: UncheckedAccount<'info>,
+    /// CHECK: constrained to the Token-2022 program id.
+    #[account(address = spl_token_2022::ID)]
+    pub token_program: UncheckedAccount<'info>,
+}
+
+#[derive(Accounts)]
+pub struct ThawAccount<'info> {
+    /// Must be the mint's freeze authority — validated by the Token-2022 CPI.
+    pub freeze_authority: Signer<'info>,
+    /// CHECK: token account, validated by the Token-2022 CPI.
+    #[account(mut)]
+    pub token_account: UncheckedAccount<'info>,
+    /// CHECK: the mint this token account belongs to, validated by the CPI.
+    pub mint: UncheckedAccount<'info>,
+    /// CHECK: constrained to the Token-2022 program id.
+    #[account(address = spl_token_2022::ID)]
+    pub token_program: UncheckedAccount<'info>,
 }
 
 #[derive(Accounts)]
@@ -172,4 +281,10 @@ pub struct InitMintV1<'info> {
 pub enum ErrorCode {
     #[msg("Failed to calculate extension account length")]
     ExtensionSpaceCalc,
+    #[msg("Mint account could not be parsed with extensions")]
+    InvalidMintState,
+    #[msg("Mint does not carry a TransferFeeConfig extension")]
+    MissingTransferFeeConfig,
+    #[msg("expected_fee does not match the mint's current-epoch transfer fee")]
+    FeeMismatch,
 }
