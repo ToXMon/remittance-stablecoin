@@ -15,5 +15,13 @@ url = "https://api.apr.dev"
 cluster = "localnet"
 wallet = "~/.config/solana/id.json"
 
+# solana-test-validator 4.2.2's built-in Token-2022 is compiled WITHOUT the
+# `zk-ops` feature: confidential Deposit/Withdraw/Transfer/ApplyPending all
+# return InvalidInstructionData. Override it with the mainnet build (dumped
+# 2026-09-30 via `solana program dump -u m TokenzQd...`).
+[[test.genesis]]
+address = "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+program = "tests/fixtures/token_2022_mainnet.so"
+
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"

@@ -91,8 +91,9 @@ pub mod remittance_stablecoin {
     /// Proof-free confidential step: folds PENDING into AVAILABLE. The owner's
     /// client must supply the credit counter it observed and the AES-encrypted
     /// new available balance (36 bytes) — both derive from the owner's secret
-    /// keys, so they cannot be computed on-chain; they are passed through and
-    /// Token-2022 validates the counter (stale counter => error).
+    /// keys, so they cannot be computed on-chain; they are passed through.
+    /// Token-2022 only RECORDS the counter (expected vs actual lets the owner
+    /// detect a stale ciphertext) and cannot verify the ciphertext at all.
     pub fn apply_pending_balance(
         ctx: Context<ApplyPendingBalance>,
         expected_pending_balance_credit_counter: u64,
