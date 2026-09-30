@@ -1,11 +1,14 @@
 use anchor_lang::prelude::*;
-use anchor_lang::solana_program::program::invoke;
+use anchor_lang::solana_program::program::{invoke, invoke_signed};
 use anchor_lang::solana_program::system_instruction;
 use spl_token_2022::extension::{
     transfer_fee::TransferFeeConfig, BaseStateWithExtensions, ExtensionType, StateWithExtensions,
 };
 
 declare_id!("KChY5fYCcqXS9uiY3daKx3fctBPTa1aQKfuJ8MkD1gz");
+
+/// Seed of the program-controlled delegate PDA.
+pub const DELEGATE_SEED: &[u8] = b"delegate";
 
 #[program]
 pub mod remittance_stablecoin {
@@ -171,6 +174,56 @@ pub mod remittance_stablecoin {
         Ok(())
     }
 
+    /// Transfer on a user's behalf through the program-owned PDA delegate
+    /// (seeds = ["delegate"]). The user must have Approved that PDA on their
+    /// token account. Token-2022 lets a *delegate* transfer even when the
+    /// account has CPI Guard enabled, which is the whole point of this path.
+    pub fn delegate_transfer(
+        ctx: Context<DelegateTransfer>,
+        amount: u64,
+        expected_fee: u64,
+    ) -> Result<()> {
+        let token_program = ctx.accounts.token_program.key();
+
+        let mint_data = ctx.accounts.mint.try_borrow_data()?;
+        let state = StateWithExtensions::<spl_token_2022::state::Mint>::unpack(&mint_data)
+            .map_err(|_| error!(ErrorCode::InvalidMintState))?;
+        let decimals = state.base.decimals;
+        let fee = state
+            .get_extension::<TransferFeeConfig>()
+            .map_err(|_| error!(ErrorCode::MissingTransferFeeConfig))?
+            .calculate_epoch_fee(Clock::get()?.epoch, amount)
+            .ok_or_else(|| error!(ErrorCode::FeeMismatch))?;
+        drop(mint_data);
+        require!(expected_fee == fee, ErrorCode::FeeMismatch);
+
+        // Canonical bump was re-derived and verified by the `bump` constraint.
+        let bump = [ctx.bumps.delegate];
+        let signer_seeds: &[&[&[u8]]] = &[&[DELEGATE_SEED, &bump]];
+
+        invoke_signed(
+            &spl_token_2022::extension::transfer_fee::instruction::transfer_checked_with_fee(
+                &token_program,
+                &ctx.accounts.source.key(),
+                &ctx.accounts.mint.key(),
+                &ctx.accounts.destination.key(),
+                &ctx.accounts.delegate.key(),
+                &[],
+                amount,
+                decimals,
+                expected_fee,
+            )?,
+            &[
+                ctx.accounts.source.to_account_info(),
+                ctx.accounts.mint.to_account_info(),
+                ctx.accounts.destination.to_account_info(),
+                ctx.accounts.delegate.to_account_info(),
+            ],
+            signer_seeds,
+        )?;
+        Ok(())
+    }
+
     /// Thaws ONE token account (freeze authority signed). Per-account control:
     /// every other new account stays frozen (DefaultAccountState).
     pub fn thaw_account(ctx: Context<ThawAccount>) -> Result<()> {
@@ -202,6 +255,26 @@ pub struct TransferWithFee<'info> {
     pub source: UncheckedAccount<'info>,
     /// CHECK: the mint, writable because transfer_checked_with_fee records the
     /// withheld fee; state read above via StateWithExtensions.
+    #[account(mut)]
+    pub mint: UncheckedAccount<'info>,
+    /// CHECK: token account, validated by the Token-2022 CPI.
+    #[account(mut)]
+    pub destination: UncheckedAccount<'info>,
+    /// CHECK: constrained to the Token-2022 program id.
+    #[account(address = spl_token_2022::ID)]
+    pub token_program: UncheckedAccount<'info>,
+}
+
+#[derive(Accounts)]
+pub struct DelegateTransfer<'info> {
+    /// CHECK: program-derived delegate; signs only via invoke_signed. Seeds and
+    /// canonical bump are verified by the constraint below.
+    #[account(seeds = [DELEGATE_SEED], bump)]
+    pub delegate: UncheckedAccount<'info>,
+    /// CHECK: token account, validated by the Token-2022 CPI (delegate + amount).
+    #[account(mut)]
+    pub source: UncheckedAccount<'info>,
+    /// CHECK: the mint, writable for fee bookkeeping; read via StateWithExtensions.
     #[account(mut)]
     pub mint: UncheckedAccount<'info>,
     /// CHECK: token account, validated by the Token-2022 CPI.

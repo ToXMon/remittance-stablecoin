@@ -19,6 +19,10 @@ import {
   getExtensionData,
   ExtensionType,
   getAssociatedTokenAddressSync,
+  createApproveCheckedInstruction,
+  createReallocateInstruction,
+  enableCpiGuard,
+  getCpiGuard,
 } from "@solana/spl-token";
 import {
   Keypair,
@@ -479,6 +483,11 @@ describe("remittance-stablecoin", () => {
   const setupV2Holder = async (name: string) => {
     const owner = Keypair.generate();
     const ownerFile = writeKeypair(name, owner);
+    // spl-token CLI withdraw fails with "InsufficientFunds" if the owner
+    // itself holds no lamports (it funds proof-context rent), so seed it.
+    await provider.connection.confirmTransaction(
+      await provider.connection.requestAirdrop(owner.publicKey, 100_000_000)
+    );
     const ata = await createAssociatedTokenAccount(
       provider.connection, payer.payer, mintV2.publicKey, owner.publicKey,
       undefined, TOKEN_2022_PROGRAM_ID
@@ -652,5 +661,99 @@ describe("remittance-stablecoin", () => {
     cli(["withdraw-confidential-tokens", cm, "40", "--owner", aliceFile]);
     assert.equal((await ctAccount(aliceAta)).publicAmount.toString(), "90000000");
     assert.throws(() => cli(["withdraw-confidential-tokens", cm, "1", "--owner", aliceFile]));
+  });
+
+  // ---- Phase D: PDA delegate survives CPI Guard ----
+  it("delegate_transfer via PDA delegate still works after the user enables CPI Guard", async () => {
+    const holder = Keypair.generate();
+    const recipient = Keypair.generate();
+    const holderAta = await createFrozenAta(holder);
+    const recipientAta = await createFrozenAta(recipient);
+    for (const ata of [holderAta, recipientAta]) {
+      await program.methods
+        .thawAccount()
+        .accounts({
+          freezeAuthority: payer.publicKey,
+          tokenAccount: ata,
+          mint: mint.publicKey,
+          tokenProgram: TOKEN_2022_PROGRAM_ID,
+        })
+        .rpc();
+    }
+    const [delegatePda] = PublicKey.findProgramAddressSync(
+      [Buffer.from("delegate")],
+      program.programId
+    );
+
+    // User (top-level, not CPI) approves the program's PDA for 3 rUSD.
+    await sendAndConfirmTransaction(
+      provider.connection,
+      new Transaction().add(
+        createApproveCheckedInstruction(
+          holderAta, mint.publicKey, delegatePda, holder.publicKey,
+          3 * TRANSFER_AMOUNT, DECIMALS, [], TOKEN_2022_PROGRAM_ID
+        )
+      ),
+      [payer.payer, holder]
+    );
+
+    const delegateTransfer = () =>
+      program.methods
+        .delegateTransfer(new anchor.BN(TRANSFER_AMOUNT), new anchor.BN(EXPECTED_FEE))
+        .accounts({
+          delegate: delegatePda,
+          source: holderAta,
+          mint: mint.publicKey,
+          destination: recipientAta,
+          tokenProgram: TOKEN_2022_PROGRAM_ID,
+        })
+        .rpc();
+    const balance = async (ata: PublicKey) =>
+      (await getAccount(provider.connection, ata, undefined, TOKEN_2022_PROGRAM_ID)).amount;
+
+    // 1) Works before CPI Guard.
+    const before = await balance(holderAta);
+    await delegateTransfer();
+    assert.equal((before - (await balance(holderAta))).toString(), TRANSFER_AMOUNT.toString());
+
+    // 2) User enables CPI Guard (needs the CpiGuard extension allocated first).
+    await sendAndConfirmTransaction(
+      provider.connection,
+      new Transaction().add(
+        createReallocateInstruction(
+          holderAta, payer.publicKey, [ExtensionType.CpiGuard], holder.publicKey,
+          [], TOKEN_2022_PROGRAM_ID
+        )
+      ),
+      [payer.payer, holder]
+    );
+    await enableCpiGuard(
+      provider.connection, payer.payer, holderAta, holder, [], undefined, TOKEN_2022_PROGRAM_ID
+    );
+    const guarded = await getAccount(provider.connection, holderAta, undefined, TOKEN_2022_PROGRAM_ID);
+    assert.isTrue(getCpiGuard(guarded)!.lockCpi);
+
+    // 3) Same, unmodified delegate path still works.
+    const mid = await balance(holderAta);
+    await delegateTransfer();
+    assert.equal((mid - (await balance(holderAta))).toString(), TRANSFER_AMOUNT.toString());
+
+    // 4) Contrast: an owner-signed transfer through our program's CPI is now blocked.
+    try {
+      await program.methods
+        .transferWithFee(new anchor.BN(TRANSFER_AMOUNT), new anchor.BN(EXPECTED_FEE))
+        .accounts({
+          authority: holder.publicKey,
+          source: holderAta,
+          mint: mint.publicKey,
+          destination: recipientAta,
+          tokenProgram: TOKEN_2022_PROGRAM_ID,
+        })
+        .signers([holder])
+        .rpc();
+      assert.fail("owner-signed CPI transfer should be blocked by CPI Guard");
+    } catch (err) {
+      assert.include(String(err), "custom program error");
+    }
   });
 });
