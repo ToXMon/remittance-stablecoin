@@ -29,9 +29,9 @@ help: use `'_` for type paths
 
 warning: `anchor-syn` (lib) generated 2 warnings
 warning: unexpected `cfg` condition value: `custom-heap`
-  --> programs/remittance-stablecoin/src/lib.rs:10:1
+  --> programs/remittance-stablecoin/src/lib.rs:13:1
    |
-10 | #[program]
+13 | #[program]
    | ^^^^^^^^^^
    |
    = note: expected values for `feature` are: `cpi`, `default`, `idl-build`, `no-entrypoint`, `no-idl`, and `no-log-ix-name`
@@ -43,9 +43,9 @@ warning: unexpected `cfg` condition value: `custom-heap`
    = note: this warning originates in the macro `$crate::custom_heap_default` which comes from the expansion of the attribute macro `program` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 warning: unexpected `cfg` condition value: `custom-panic`
-  --> programs/remittance-stablecoin/src/lib.rs:10:1
+  --> programs/remittance-stablecoin/src/lib.rs:13:1
    |
-10 | #[program]
+13 | #[program]
    | ^^^^^^^^^^
    |
    = note: expected values for `feature` are: `cpi`, `default`, `idl-build`, `no-entrypoint`, `no-idl`, and `no-log-ix-name`
@@ -56,9 +56,9 @@ warning: unexpected `cfg` condition value: `custom-panic`
    = note: this warning originates in the macro `$crate::custom_panic_default` which comes from the expansion of the attribute macro `program` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 warning: unexpected `cfg` condition value: `anchor-debug`
-  --> programs/remittance-stablecoin/src/lib.rs:10:1
+  --> programs/remittance-stablecoin/src/lib.rs:13:1
    |
-10 | #[program]
+13 | #[program]
    | ^^^^^^^^^^
    |
    = note: expected values for `feature` are: `cpi`, `default`, `idl-build`, `no-entrypoint`, `no-idl`, and `no-log-ix-name`
@@ -69,9 +69,9 @@ warning: unexpected `cfg` condition value: `anchor-debug`
    = note: this warning originates in the attribute macro `program` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 warning: unexpected `cfg` condition value: `anchor-debug`
-  --> programs/remittance-stablecoin/src/lib.rs:10:1
+  --> programs/remittance-stablecoin/src/lib.rs:13:1
    |
-10 | #[program]
+13 | #[program]
    | ^^^^^^^^^^
    |
    = note: expected values for `feature` are: `cpi`, `default`, `idl-build`, `no-entrypoint`, `no-idl`, and `no-log-ix-name`
@@ -82,9 +82,9 @@ warning: unexpected `cfg` condition value: `anchor-debug`
    = note: this warning originates in the derive macro `Accounts` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 warning: unexpected `cfg` condition value: `anchor-debug`
-   --> programs/remittance-stablecoin/src/lib.rs:196:10
+   --> programs/remittance-stablecoin/src/lib.rs:249:10
     |
-196 | #[derive(Accounts)]
+249 | #[derive(Accounts)]
     |          ^^^^^^^^
     |
     = note: expected values for `feature` are: `cpi`, `default`, `idl-build`, `no-entrypoint`, `no-idl`, and `no-log-ix-name`
@@ -95,9 +95,9 @@ warning: unexpected `cfg` condition value: `anchor-debug`
     = note: this warning originates in the derive macro `Accounts` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 warning: unexpected `cfg` condition value: `anchor-debug`
-   --> programs/remittance-stablecoin/src/lib.rs:215:10
+   --> programs/remittance-stablecoin/src/lib.rs:268:10
     |
-215 | #[derive(Accounts)]
+268 | #[derive(Accounts)]
     |          ^^^^^^^^
     |
     = note: expected values for `feature` are: `cpi`, `default`, `idl-build`, `no-entrypoint`, `no-idl`, and `no-log-ix-name`
@@ -108,9 +108,9 @@ warning: unexpected `cfg` condition value: `anchor-debug`
     = note: this warning originates in the derive macro `Accounts` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 warning: unexpected `cfg` condition value: `anchor-debug`
-   --> programs/remittance-stablecoin/src/lib.rs:229:10
+   --> programs/remittance-stablecoin/src/lib.rs:288:10
     |
-229 | #[derive(Accounts)]
+288 | #[derive(Accounts)]
     |          ^^^^^^^^
     |
     = note: expected values for `feature` are: `cpi`, `default`, `idl-build`, `no-entrypoint`, `no-idl`, and `no-log-ix-name`
@@ -121,9 +121,9 @@ warning: unexpected `cfg` condition value: `anchor-debug`
     = note: this warning originates in the derive macro `Accounts` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 warning: unexpected `cfg` condition value: `anchor-debug`
-   --> programs/remittance-stablecoin/src/lib.rs:245:10
+   --> programs/remittance-stablecoin/src/lib.rs:302:10
     |
-245 | #[derive(Accounts)]
+302 | #[derive(Accounts)]
     |          ^^^^^^^^
     |
     = note: expected values for `feature` are: `cpi`, `default`, `idl-build`, `no-entrypoint`, `no-idl`, and `no-log-ix-name`
@@ -134,9 +134,9 @@ warning: unexpected `cfg` condition value: `anchor-debug`
     = note: this warning originates in the derive macro `Accounts` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 warning: unexpected `cfg` condition value: `anchor-debug`
-   --> programs/remittance-stablecoin/src/lib.rs:259:10
+   --> programs/remittance-stablecoin/src/lib.rs:318:10
     |
-259 | #[derive(Accounts)]
+318 | #[derive(Accounts)]
     |          ^^^^^^^^
     |
     = note: expected values for `feature` are: `cpi`, `default`, `idl-build`, `no-entrypoint`, `no-idl`, and `no-log-ix-name`
@@ -146,8 +146,21 @@ warning: unexpected `cfg` condition value: `anchor-debug`
     = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
     = note: this warning originates in the derive macro `Accounts` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-warning: `remittance-stablecoin` (lib) generated 14 warnings (5 duplicates)
-    Finished `release` profile [optimized] target(s) in 13.90s
+warning: unexpected `cfg` condition value: `anchor-debug`
+   --> programs/remittance-stablecoin/src/lib.rs:332:10
+    |
+332 | #[derive(Accounts)]
+    |          ^^^^^^^^
+    |
+    = note: expected values for `feature` are: `cpi`, `default`, `idl-build`, `no-entrypoint`, `no-idl`, and `no-log-ix-name`
+    = note: using a cfg inside a derive macro will use the cfgs from the destination crate and not the ones from the defining crate
+    = help: try referring to `Accounts` crate for guidance on how handle this unexpected cfg
+    = help: the derive macro `Accounts` may come from an old version of the `anchor_derive_accounts` crate, try updating your dependency with `cargo update -p anchor_derive_accounts`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: this warning originates in the derive macro `Accounts` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: `remittance-stablecoin` (lib) generated 15 warnings (5 duplicates)
+    Finished `release` profile [optimized] target(s) in 0.57s
 warning: hiding a lifetime that's elided elsewhere is confusing
   --> vendor/anchor-syn/src/parser/context.rs:41:20
    |
@@ -179,9 +192,9 @@ help: use `'_` for type paths
 
 warning: `anchor-syn` (lib) generated 2 warnings (run `cargo fix --lib -p anchor-syn` to apply 2 suggestions)
 warning: unexpected `cfg` condition value: `custom-heap`
-  --> programs/remittance-stablecoin/src/lib.rs:10:1
+  --> programs/remittance-stablecoin/src/lib.rs:13:1
    |
-10 | #[program]
+13 | #[program]
    | ^^^^^^^^^^
    |
    = note: expected values for `feature` are: `cpi`, `default`, `idl-build`, `no-entrypoint`, `no-idl`, and `no-log-ix-name`
@@ -192,9 +205,9 @@ warning: unexpected `cfg` condition value: `custom-heap`
    = note: this warning originates in the macro `$crate::custom_heap_default` which comes from the expansion of the attribute macro `program` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 warning: unexpected `cfg` condition value: `solana`
-  --> programs/remittance-stablecoin/src/lib.rs:10:1
+  --> programs/remittance-stablecoin/src/lib.rs:13:1
    |
-10 | #[program]
+13 | #[program]
    | ^^^^^^^^^^
    |
    = note: expected values for `target_os` are: `aix`, `amdhsa`, `android`, `cuda`, `cygwin`, `dragonfly`, `emscripten`, `espidf`, `freebsd`, `fuchsia`, `haiku`, `helenos`, `hermit`, `horizon`, `hurd`, `illumos`, `ios`, `l4re`, `linux`, `lynxos178`, `macos`, `managarm`, `motor`, `netbsd`, `none`, `nto`, `nuttx`, `openbsd`, `ps3`, `psp`, `psx`, `qnx`, `qurt`, `redox`, and `rtems` and 16 more
@@ -204,9 +217,9 @@ warning: unexpected `cfg` condition value: `solana`
    = note: this warning originates in the macro `$crate::custom_heap_default` which comes from the expansion of the attribute macro `program` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 warning: unexpected `cfg` condition value: `custom-panic`
-  --> programs/remittance-stablecoin/src/lib.rs:10:1
+  --> programs/remittance-stablecoin/src/lib.rs:13:1
    |
-10 | #[program]
+13 | #[program]
    | ^^^^^^^^^^
    |
    = note: expected values for `feature` are: `cpi`, `default`, `idl-build`, `no-entrypoint`, `no-idl`, and `no-log-ix-name`
@@ -216,9 +229,9 @@ warning: unexpected `cfg` condition value: `custom-panic`
    = note: this warning originates in the macro `$crate::custom_panic_default` which comes from the expansion of the attribute macro `program` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 warning: unexpected `cfg` condition value: `solana`
-  --> programs/remittance-stablecoin/src/lib.rs:10:1
+  --> programs/remittance-stablecoin/src/lib.rs:13:1
    |
-10 | #[program]
+13 | #[program]
    | ^^^^^^^^^^
    |
    = note: expected values for `target_os` are: `aix`, `amdhsa`, `android`, `cuda`, `cygwin`, `dragonfly`, `emscripten`, `espidf`, `freebsd`, `fuchsia`, `haiku`, `helenos`, `hermit`, `horizon`, `hurd`, `illumos`, `ios`, `l4re`, `linux`, `lynxos178`, `macos`, `managarm`, `motor`, `netbsd`, `none`, `nto`, `nuttx`, `openbsd`, `ps3`, `psp`, `psx`, `qnx`, `qurt`, `redox`, and `rtems` and 16 more
@@ -228,9 +241,9 @@ warning: unexpected `cfg` condition value: `solana`
    = note: this warning originates in the macro `$crate::custom_panic_default` which comes from the expansion of the attribute macro `program` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 warning: unexpected `cfg` condition value: `anchor-debug`
-  --> programs/remittance-stablecoin/src/lib.rs:10:1
+  --> programs/remittance-stablecoin/src/lib.rs:13:1
    |
-10 | #[program]
+13 | #[program]
    | ^^^^^^^^^^
    |
    = note: expected values for `feature` are: `cpi`, `default`, `idl-build`, `no-entrypoint`, `no-idl`, and `no-log-ix-name`
@@ -240,9 +253,9 @@ warning: unexpected `cfg` condition value: `anchor-debug`
    = note: this warning originates in the attribute macro `program` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 warning: unexpected `cfg` condition value: `anchor-debug`
-  --> programs/remittance-stablecoin/src/lib.rs:10:1
+  --> programs/remittance-stablecoin/src/lib.rs:13:1
    |
-10 | #[program]
+13 | #[program]
    | ^^^^^^^^^^
    |
    = note: expected values for `feature` are: `cpi`, `default`, `idl-build`, `no-entrypoint`, `no-idl`, and `no-log-ix-name`
@@ -252,9 +265,9 @@ warning: unexpected `cfg` condition value: `anchor-debug`
    = note: this warning originates in the derive macro `Accounts` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 warning: unexpected `cfg` condition value: `anchor-debug`
-   --> programs/remittance-stablecoin/src/lib.rs:196:10
+   --> programs/remittance-stablecoin/src/lib.rs:249:10
     |
-196 | #[derive(Accounts)]
+249 | #[derive(Accounts)]
     |          ^^^^^^^^
     |
     = note: expected values for `feature` are: `cpi`, `default`, `idl-build`, `no-entrypoint`, `no-idl`, and `no-log-ix-name`
@@ -264,9 +277,9 @@ warning: unexpected `cfg` condition value: `anchor-debug`
     = note: this warning originates in the derive macro `Accounts` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 warning: unexpected `cfg` condition value: `anchor-debug`
-   --> programs/remittance-stablecoin/src/lib.rs:215:10
+   --> programs/remittance-stablecoin/src/lib.rs:268:10
     |
-215 | #[derive(Accounts)]
+268 | #[derive(Accounts)]
     |          ^^^^^^^^
     |
     = note: expected values for `feature` are: `cpi`, `default`, `idl-build`, `no-entrypoint`, `no-idl`, and `no-log-ix-name`
@@ -276,9 +289,9 @@ warning: unexpected `cfg` condition value: `anchor-debug`
     = note: this warning originates in the derive macro `Accounts` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 warning: unexpected `cfg` condition value: `anchor-debug`
-   --> programs/remittance-stablecoin/src/lib.rs:229:10
+   --> programs/remittance-stablecoin/src/lib.rs:288:10
     |
-229 | #[derive(Accounts)]
+288 | #[derive(Accounts)]
     |          ^^^^^^^^
     |
     = note: expected values for `feature` are: `cpi`, `default`, `idl-build`, `no-entrypoint`, `no-idl`, and `no-log-ix-name`
@@ -288,9 +301,9 @@ warning: unexpected `cfg` condition value: `anchor-debug`
     = note: this warning originates in the derive macro `Accounts` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 warning: unexpected `cfg` condition value: `anchor-debug`
-   --> programs/remittance-stablecoin/src/lib.rs:245:10
+   --> programs/remittance-stablecoin/src/lib.rs:302:10
     |
-245 | #[derive(Accounts)]
+302 | #[derive(Accounts)]
     |          ^^^^^^^^
     |
     = note: expected values for `feature` are: `cpi`, `default`, `idl-build`, `no-entrypoint`, `no-idl`, and `no-log-ix-name`
@@ -300,9 +313,9 @@ warning: unexpected `cfg` condition value: `anchor-debug`
     = note: this warning originates in the derive macro `Accounts` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 warning: unexpected `cfg` condition value: `anchor-debug`
-   --> programs/remittance-stablecoin/src/lib.rs:259:10
+   --> programs/remittance-stablecoin/src/lib.rs:318:10
     |
-259 | #[derive(Accounts)]
+318 | #[derive(Accounts)]
     |          ^^^^^^^^
     |
     = note: expected values for `feature` are: `cpi`, `default`, `idl-build`, `no-entrypoint`, `no-idl`, and `no-log-ix-name`
@@ -311,8 +324,20 @@ warning: unexpected `cfg` condition value: `anchor-debug`
     = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
     = note: this warning originates in the derive macro `Accounts` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-warning: `remittance-stablecoin` (lib test) generated 16 warnings (5 duplicates)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 19.24s
+warning: unexpected `cfg` condition value: `anchor-debug`
+   --> programs/remittance-stablecoin/src/lib.rs:332:10
+    |
+332 | #[derive(Accounts)]
+    |          ^^^^^^^^
+    |
+    = note: expected values for `feature` are: `cpi`, `default`, `idl-build`, `no-entrypoint`, `no-idl`, and `no-log-ix-name`
+    = note: using a cfg inside a derive macro will use the cfgs from the destination crate and not the ones from the defining crate
+    = help: try referring to `Accounts` crate for guidance on how handle this unexpected cfg
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: this warning originates in the derive macro `Accounts` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: `remittance-stablecoin` (lib test) generated 17 warnings (5 duplicates)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.80s
      Running unittests src/lib.rs (/Users/tolushekoni/sb2026/remittance-stablecoin/target/debug/build/remittance-stablecoin/5c88fa0be5cb838b/out/remittance_stablecoin-5c88fa0be5cb838b)
 
 Found a 'test' script in the Anchor.toml. Running it as a test suite!
@@ -322,26 +347,29 @@ Running test suite: "/Users/tolushekoni/sb2026/remittance-stablecoin/Anchor.toml
 yarn run v1.22.19
 warning ../../package.json: No license field
 $ /Users/tolushekoni/sb2026/remittance-stablecoin/node_modules/.bin/ts-mocha -p ./tsconfig.json -t 1000000 'tests/**/*.ts'
-(node:30524) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/tolushekoni/sb2026/remittance-stablecoin/tests/remittance-stablecoin.ts is not specified and it doesn't parse as CommonJS.
+(node:41027) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/tolushekoni/sb2026/remittance-stablecoin/tests/remittance-stablecoin.ts is not specified and it doesn't parse as CommonJS.
 Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
 To eliminate this warning, add "type": "module" to /Users/tolushekoni/sb2026/remittance-stablecoin/package.json.
 (Use `node --trace-warnings ...` to show where the warning was created)
 
 
   remittance-stablecoin
-    ✔ init_mint_v1 stacks all four extensions (1415ms)
-    ✔ new token accounts are frozen by default (pre-KYC) (741ms)
-    ✔ thaw_account unfreezes one account; other accounts stay frozen (5560ms)
-    ✔ thaw_account with the wrong authority fails (2446ms)
-    ✔ transfer_with_fee moves tokens and withholds the epoch fee (5767ms)
-    ✔ transfer_with_fee with a mismatched expected fee fails (6141ms)
-    ✔ transfer from a frozen sender fails (2692ms)
-    ✔ init_mint_v2 adds PermanentDelegate + ConfidentialTransferMint (manual approve) (480ms)
-    ✔ v2 lifecycle: manual approve gates deposit; deposit -> apply -> withdraw (7076ms)
-    ✔ v2: apply_pending_balance CPI succeeds with the current counter (5147ms)
-    ✔ control: confidential transfer with real ZK proofs (no-fee CT mint) (16319ms)
+    ✔ init_mint_v1 stacks all four extensions (228ms)
+    ✔ new token accounts are frozen by default (pre-KYC) (482ms)
+    ✔ thaw_account unfreezes one account; other accounts stay frozen (4554ms)
+    ✔ thaw_account with the wrong authority fails (2084ms)
+    ✔ transfer_with_fee moves tokens and withholds the epoch fee (5292ms)
+    ✔ transfer_with_fee with a mismatched expected fee fails (4864ms)
+    ✔ transfer from a frozen sender fails (2962ms)
+    ✔ init_mint_v2 adds PermanentDelegate + ConfidentialTransferMint (manual approve) (525ms)
+    ✔ v2 lifecycle: manual approve gates deposit; deposit -> apply -> withdraw (6933ms)
+    ✔ v2: apply_pending_balance CPI succeeds with the current counter (4182ms)
+    ✔ control: confidential transfer with real ZK proofs (no-fee CT mint) (12930ms)
+    ✔ delegate_transfer via PDA delegate still works after the user enables CPI Guard (7166ms)
+    ✔ permanent delegate can burn only the plaintext balance; confidential funds stay out of reach (4584ms)
+    ✔ freezing an account blocks confidential deposits (3867ms)
 
 
-  11 passing (54s)
+  14 passing (1m)
 
-Done in 81.20s.
+Done in 63.65s.
