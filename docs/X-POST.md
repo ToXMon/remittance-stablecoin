@@ -9,7 +9,7 @@ Repo link is already filled in: https://github.com/ToXMon/remittance-stablecoin
 I'm late posting this. I kept working anyway. The homework was a remittance stablecoin on Solana Token-2022 that gives regulators a PermanentDelegate and users ConfidentialTransferMint, then shows why seizure still fails. 14 tests green, repo at the end.
 
 **2/5**
-Why it fails: the delegate can burn the plaintext u64 balance. Confidential balances are ElGamal ciphertexts under the holder's key, and moving them needs a ZK proof only the holder can build. In my test the delegate burned 600 of 1000 units, a 1-unit burn then failed, 400 stayed encrypted.
+Why it fails: the delegate burns the plaintext u64. Confidential balances are ElGamal ciphertexts under the holder's key, and moving them needs a ZK proof only the holder can build. My test: delegate burned 600 of 1000, a 1-unit burn then failed, 400 stayed encrypted.
 
 **3/5**
 The fix has to sit before the deposit. ConfidentialTransferMint with auto_approve_new_accounts=false means the issuer approves every account. Deposit before approve fails with 0x18. DefaultAccountState=Frozen keeps new accounts unusable until screened.
