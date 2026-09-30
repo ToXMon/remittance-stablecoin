@@ -20,6 +20,7 @@ import {
   ExtensionType,
   getAssociatedTokenAddressSync,
   createApproveCheckedInstruction,
+  createBurnCheckedInstruction,
   createReallocateInstruction,
   enableCpiGuard,
   getCpiGuard,
@@ -451,8 +452,8 @@ describe("remittance-stablecoin", () => {
   // ConfidentialTransferAccount TLV (spl-token-2022 3.0.5 layout):
   // approved(1) elgamal(32) pending_lo(64) pending_hi(64) available(64)
   // decryptable(36) credits_ok(1) noncf_ok(1) pending_ctr(8) max(8) exp(8) act(8)
-  const ctAccount = async (ata: PublicKey) => {
-    const acct = await getAccount(provider.connection, ata, undefined, TOKEN_2022_PROGRAM_ID);
+  const ctAccount = async (ata: PublicKey, commitment?: anchor.web3.Commitment) => {
+    const acct = await getAccount(provider.connection, ata, commitment, TOKEN_2022_PROGRAM_ID);
     const d = getExtensionData(ExtensionType.ConfidentialTransferAccount, acct.tlvData)!;
     const isZero = (b: Uint8Array) => b.every((x) => x === 0);
     return {
@@ -465,6 +466,17 @@ describe("remittance-stablecoin", () => {
       expectedCounter: Buffer.from(d.subarray(279, 287)).readBigUInt64LE(),
       actualCounter: Buffer.from(d.subarray(287, 295)).readBigUInt64LE(),
     };
+  };
+  // The CLI reads at "confirmed" while anchor's rpc() returns at the provider's
+  // (weaker) commitment; if the CLI reads too early it computes its new
+  // decryptable balance from a stale pending balance, and the later withdraw
+  // dies with "InsufficientFunds". Wait until the state is visible at confirmed.
+  const waitConfirmedCounter = async (ata: PublicKey, want: bigint) => {
+    for (let i = 0; i < 50; i++) {
+      if ((await ctAccount(ata, "confirmed")).pendingCounter === want) return;
+      await new Promise((r) => setTimeout(r, 200));
+    }
+    throw new Error("pending counter never reached " + want + " at confirmed");
   };
   // Issuer ApproveAccount (no proof): TokenInstruction 27 + ct-sub-ix 3.
   const approveIx = (ata: PublicKey, m: PublicKey) =>
@@ -483,11 +495,6 @@ describe("remittance-stablecoin", () => {
   const setupV2Holder = async (name: string) => {
     const owner = Keypair.generate();
     const ownerFile = writeKeypair(name, owner);
-    // spl-token CLI withdraw fails with "InsufficientFunds" if the owner
-    // itself holds no lamports (it funds proof-context rent), so seed it.
-    await provider.connection.confirmTransaction(
-      await provider.connection.requestAirdrop(owner.publicKey, 100_000_000)
-    );
     const ata = await createAssociatedTokenAccount(
       provider.connection, payer.payer, mintV2.publicKey, owner.publicKey,
       undefined, TOKEN_2022_PROGRAM_ID
@@ -553,6 +560,7 @@ describe("remittance-stablecoin", () => {
     assert.equal(st.pendingCounter, 1n);
     assert.isFalse(st.pendingLoZero, "pending ciphertext must be non-zero");
     assert.isTrue(st.availableZero, "available still zero before apply");
+    await waitConfirmedCounter(h.ata, 1n);
 
     // CLI computes the AES-encrypted new balance from the owner's keys.
     cli(["apply-pending-balance", mintStr, "--owner", h.ownerFile]);
@@ -754,6 +762,67 @@ describe("remittance-stablecoin", () => {
       assert.fail("owner-signed CPI transfer should be blocked by CPI Guard");
     } catch (err) {
       assert.include(String(err), "custom program error");
+    }
+  });
+
+  // ---- Phase D: seizure gap evidence (see docs/FINDING.md) ----
+  const approveTx = (ata: PublicKey) =>
+    sendAndConfirmTransaction(
+      provider.connection,
+      new Transaction().add(approveIx(ata, mintV2.publicKey)),
+      [payer.payer]
+    );
+
+  it("permanent delegate can burn only the plaintext balance; confidential funds stay out of reach", async () => {
+    const h = await setupV2Holder("seized");
+    await approveTx(h.ata);
+    await depositViaProgram(h, 400_000_000); // 400 moves into the encrypted pending balance
+
+    const burn = (amt: number) =>
+      sendAndConfirmTransaction(
+        provider.connection,
+        new Transaction().add(
+          createBurnCheckedInstruction(
+            h.ata, mintV2.publicKey, payer.publicKey, amt, DECIMALS, [], TOKEN_2022_PROGRAM_ID
+          )
+        ),
+        [payer.payer] // payer == PermanentDelegate, NOT the token owner
+      );
+
+    // Delegate seizes everything it can see: the 600 plaintext.
+    await burn(CT_FUND - 400_000_000);
+    let st = await ctAccount(h.ata);
+    assert.equal(st.publicAmount.toString(), "0");
+    // The 400 is still there, encrypted, and untouchable: one more unit fails.
+    assert.isFalse(st.pendingLoZero, "encrypted pending balance survives seizure");
+    try {
+      await burn(1);
+      assert.fail("delegate must not reach confidential funds");
+    } catch (err) {
+      assert.include(String(err), "custom program error"); // InsufficientFunds
+    }
+    st = await ctAccount(h.ata);
+    assert.equal(st.pendingCounter, 1n);
+  });
+
+  it("freezing an account blocks confidential deposits", async () => {
+    const h = await setupV2Holder("frozen");
+    await approveTx(h.ata);
+    await sendAndConfirmTransaction(
+      provider.connection,
+      new Transaction().add(
+        createFreezeAccountInstruction(
+          h.ata, mintV2.publicKey, payer.publicKey, [], TOKEN_2022_PROGRAM_ID
+        )
+      ),
+      [payer.payer]
+    );
+    try {
+      await depositViaProgram(h, 100_000_000);
+      assert.fail("deposit into a frozen account must fail");
+    } catch (err) {
+      const msg = String(err);
+      assert.isTrue(msg.includes("0x11") || /frozen/i.test(msg), msg);
     }
   });
 });
