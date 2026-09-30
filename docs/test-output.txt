@@ -82,9 +82,9 @@ warning: unexpected `cfg` condition value: `anchor-debug`
    = note: this warning originates in the derive macro `Accounts` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 warning: unexpected `cfg` condition value: `anchor-debug`
-   --> programs/remittance-stablecoin/src/lib.rs:231:10
+   --> programs/remittance-stablecoin/src/lib.rs:195:10
     |
-231 | #[derive(Accounts)]
+195 | #[derive(Accounts)]
     |          ^^^^^^^^
     |
     = note: expected values for `feature` are: `cpi`, `default`, `idl-build`, `no-entrypoint`, `no-idl`, and `no-log-ix-name`
@@ -95,9 +95,9 @@ warning: unexpected `cfg` condition value: `anchor-debug`
     = note: this warning originates in the derive macro `Accounts` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 warning: unexpected `cfg` condition value: `anchor-debug`
-   --> programs/remittance-stablecoin/src/lib.rs:250:10
+   --> programs/remittance-stablecoin/src/lib.rs:214:10
     |
-250 | #[derive(Accounts)]
+214 | #[derive(Accounts)]
     |          ^^^^^^^^
     |
     = note: expected values for `feature` are: `cpi`, `default`, `idl-build`, `no-entrypoint`, `no-idl`, and `no-log-ix-name`
@@ -108,9 +108,9 @@ warning: unexpected `cfg` condition value: `anchor-debug`
     = note: this warning originates in the derive macro `Accounts` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 warning: unexpected `cfg` condition value: `anchor-debug`
-   --> programs/remittance-stablecoin/src/lib.rs:264:10
+   --> programs/remittance-stablecoin/src/lib.rs:228:10
     |
-264 | #[derive(Accounts)]
+228 | #[derive(Accounts)]
     |          ^^^^^^^^
     |
     = note: expected values for `feature` are: `cpi`, `default`, `idl-build`, `no-entrypoint`, `no-idl`, and `no-log-ix-name`
@@ -120,8 +120,34 @@ warning: unexpected `cfg` condition value: `anchor-debug`
     = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
     = note: this warning originates in the derive macro `Accounts` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-warning: `remittance-stablecoin` (lib) generated 12 warnings (5 duplicates)
-    Finished `release` profile [optimized] target(s) in 0.84s
+warning: unexpected `cfg` condition value: `anchor-debug`
+   --> programs/remittance-stablecoin/src/lib.rs:244:10
+    |
+244 | #[derive(Accounts)]
+    |          ^^^^^^^^
+    |
+    = note: expected values for `feature` are: `cpi`, `default`, `idl-build`, `no-entrypoint`, `no-idl`, and `no-log-ix-name`
+    = note: using a cfg inside a derive macro will use the cfgs from the destination crate and not the ones from the defining crate
+    = help: try referring to `Accounts` crate for guidance on how handle this unexpected cfg
+    = help: the derive macro `Accounts` may come from an old version of the `anchor_derive_accounts` crate, try updating your dependency with `cargo update -p anchor_derive_accounts`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: this warning originates in the derive macro `Accounts` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: unexpected `cfg` condition value: `anchor-debug`
+   --> programs/remittance-stablecoin/src/lib.rs:258:10
+    |
+258 | #[derive(Accounts)]
+    |          ^^^^^^^^
+    |
+    = note: expected values for `feature` are: `cpi`, `default`, `idl-build`, `no-entrypoint`, `no-idl`, and `no-log-ix-name`
+    = note: using a cfg inside a derive macro will use the cfgs from the destination crate and not the ones from the defining crate
+    = help: try referring to `Accounts` crate for guidance on how handle this unexpected cfg
+    = help: the derive macro `Accounts` may come from an old version of the `anchor_derive_accounts` crate, try updating your dependency with `cargo update -p anchor_derive_accounts`
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: this warning originates in the derive macro `Accounts` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: `remittance-stablecoin` (lib) generated 14 warnings (5 duplicates)
+    Finished `release` profile [optimized] target(s) in 1.29s
 warning: hiding a lifetime that's elided elsewhere is confusing
   --> vendor/anchor-syn/src/parser/context.rs:41:20
    |
@@ -226,9 +252,9 @@ warning: unexpected `cfg` condition value: `anchor-debug`
    = note: this warning originates in the derive macro `Accounts` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 warning: unexpected `cfg` condition value: `anchor-debug`
-   --> programs/remittance-stablecoin/src/lib.rs:231:10
+   --> programs/remittance-stablecoin/src/lib.rs:195:10
     |
-231 | #[derive(Accounts)]
+195 | #[derive(Accounts)]
     |          ^^^^^^^^
     |
     = note: expected values for `feature` are: `cpi`, `default`, `idl-build`, `no-entrypoint`, `no-idl`, and `no-log-ix-name`
@@ -238,9 +264,9 @@ warning: unexpected `cfg` condition value: `anchor-debug`
     = note: this warning originates in the derive macro `Accounts` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 warning: unexpected `cfg` condition value: `anchor-debug`
-   --> programs/remittance-stablecoin/src/lib.rs:250:10
+   --> programs/remittance-stablecoin/src/lib.rs:214:10
     |
-250 | #[derive(Accounts)]
+214 | #[derive(Accounts)]
     |          ^^^^^^^^
     |
     = note: expected values for `feature` are: `cpi`, `default`, `idl-build`, `no-entrypoint`, `no-idl`, and `no-log-ix-name`
@@ -250,9 +276,9 @@ warning: unexpected `cfg` condition value: `anchor-debug`
     = note: this warning originates in the derive macro `Accounts` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 warning: unexpected `cfg` condition value: `anchor-debug`
-   --> programs/remittance-stablecoin/src/lib.rs:264:10
+   --> programs/remittance-stablecoin/src/lib.rs:228:10
     |
-264 | #[derive(Accounts)]
+228 | #[derive(Accounts)]
     |          ^^^^^^^^
     |
     = note: expected values for `feature` are: `cpi`, `default`, `idl-build`, `no-entrypoint`, `no-idl`, and `no-log-ix-name`
@@ -261,8 +287,32 @@ warning: unexpected `cfg` condition value: `anchor-debug`
     = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
     = note: this warning originates in the derive macro `Accounts` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-warning: `remittance-stablecoin` (lib test) generated 14 warnings (5 duplicates)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.01s
+warning: unexpected `cfg` condition value: `anchor-debug`
+   --> programs/remittance-stablecoin/src/lib.rs:244:10
+    |
+244 | #[derive(Accounts)]
+    |          ^^^^^^^^
+    |
+    = note: expected values for `feature` are: `cpi`, `default`, `idl-build`, `no-entrypoint`, `no-idl`, and `no-log-ix-name`
+    = note: using a cfg inside a derive macro will use the cfgs from the destination crate and not the ones from the defining crate
+    = help: try referring to `Accounts` crate for guidance on how handle this unexpected cfg
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: this warning originates in the derive macro `Accounts` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: unexpected `cfg` condition value: `anchor-debug`
+   --> programs/remittance-stablecoin/src/lib.rs:258:10
+    |
+258 | #[derive(Accounts)]
+    |          ^^^^^^^^
+    |
+    = note: expected values for `feature` are: `cpi`, `default`, `idl-build`, `no-entrypoint`, `no-idl`, and `no-log-ix-name`
+    = note: using a cfg inside a derive macro will use the cfgs from the destination crate and not the ones from the defining crate
+    = help: try referring to `Accounts` crate for guidance on how handle this unexpected cfg
+    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+    = note: this warning originates in the derive macro `Accounts` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+warning: `remittance-stablecoin` (lib test) generated 16 warnings (5 duplicates)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.41s
      Running unittests src/lib.rs (/Users/tolushekoni/sb2026/remittance-stablecoin/target/debug/build/remittance-stablecoin/5c88fa0be5cb838b/out/remittance_stablecoin-5c88fa0be5cb838b)
 
 Found a 'test' script in the Anchor.toml. Running it as a test suite!
@@ -272,22 +322,23 @@ Running test suite: "/Users/tolushekoni/sb2026/remittance-stablecoin/Anchor.toml
 yarn run v1.22.19
 warning ../../package.json: No license field
 $ /Users/tolushekoni/sb2026/remittance-stablecoin/node_modules/.bin/ts-mocha -p ./tsconfig.json -t 1000000 'tests/**/*.ts'
-(node:25861) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/tolushekoni/sb2026/remittance-stablecoin/tests/remittance-stablecoin.ts is not specified and it doesn't parse as CommonJS.
+(node:28223) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/tolushekoni/sb2026/remittance-stablecoin/tests/remittance-stablecoin.ts is not specified and it doesn't parse as CommonJS.
 Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
 To eliminate this warning, add "type": "module" to /Users/tolushekoni/sb2026/remittance-stablecoin/package.json.
 (Use `node --trace-warnings ...` to show where the warning was created)
 
 
   remittance-stablecoin
-    ✔ init_mint_v1 stacks all four extensions (577ms)
-    ✔ new token accounts are frozen by default (pre-KYC) (467ms)
-    ✔ thaw_account unfreezes one account; other accounts stay frozen (4465ms)
-    ✔ thaw_account with the wrong authority fails (2445ms)
-    ✔ transfer_with_fee moves tokens and withholds the epoch fee (5345ms)
-    ✔ transfer_with_fee with a mismatched expected fee fails (6522ms)
-    ✔ transfer from a frozen sender fails (4280ms)
+    ✔ init_mint_v1 stacks all four extensions (434ms)
+    ✔ new token accounts are frozen by default (pre-KYC) (470ms)
+    ✔ thaw_account unfreezes one account; other accounts stay frozen (5899ms)
+    ✔ thaw_account with the wrong authority fails (3600ms)
+    ✔ transfer_with_fee moves tokens and withholds the epoch fee (5623ms)
+    ✔ transfer_with_fee with a mismatched expected fee fails (9047ms)
+    ✔ transfer from a frozen sender fails (13929ms)
+    ✔ init_mint_v2 adds PermanentDelegate + ConfidentialTransferMint (manual approve) (2133ms)
 
 
-  7 passing (24s)
+  8 passing (41s)
 
-Done in 29.25s.
+Done in 48.55s.
