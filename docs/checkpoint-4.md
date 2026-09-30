@@ -13,7 +13,7 @@ Date: 2026-09-30. Final run: **14 passing** (`docs/test-output.txt`, exit 0).
   plaintext balance (a further 1-unit burn fails, encrypted pending balance
   survives); freezing an account blocks confidential deposits.
 - `docs/FINDING.md`, `docs/X-POST.md` (5-post thread + LinkedIn),
-  `docs/x-post-image.png` (test output rendered to PNG with PIL + Menlo),
+  `docs/x-post-image.png` (real screenshot of the passing `anchor test` run, 14 green checks; replaced the earlier PIL render),
   `README.md`.
 
 ## Screenshot for submission

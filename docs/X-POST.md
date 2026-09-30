@@ -1,6 +1,6 @@
 # X post + LinkedIn variant
 
-Image: `docs/x-post-image.png` (attach to post 1) — cropped passing `anchor test` output.
+Image: `docs/x-post-image.png` (attach to post 1) — real screenshot of the passing `anchor test` output (14 green checks).
 Replace `<REPO_URL>` before posting.
 
 ## X thread (5 posts)
