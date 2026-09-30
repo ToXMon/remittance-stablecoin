@@ -18,7 +18,7 @@ The fix has to sit before the deposit. ConfidentialTransferMint with auto_approv
 More layers: an auditor ElGamal key at mint init makes transfer amounts visible (my v2 leaves it unset, documented gap), freezing a suspect account blocks deposits, and deposit amounts are plaintext so they're watchable.
 
 **5/5**
-This one stretched me: mint sizing so extensions actually fit, extension inits before InitializeMint, a validator whose token-2022 had no zk-ops, and a CLI that still can't do confidential transfer on a fee mint. Slow, but I finished it. https://github.com/ToXMon/remittance-stablecoin
+This one stretched me: mint sizing so extensions fit, extension inits before InitializeMint, a validator whose token-2022 had no zk-ops, a CLI that can't do confidential transfer on a fee mint. Slow, but I finished it. https://github.com/ToXMon/remittance-stablecoin
 
 ## LinkedIn variant
 
