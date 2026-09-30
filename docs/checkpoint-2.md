@@ -49,3 +49,41 @@ Notes for the implementer: `transfer_checked_with_fee` computes the real fee
 inside token-2022; our instruction arg `expected_fee` only gates the max —
 the test asserts the withheld amount equals
 `calculate_epoch_fee(epoch, amount)`.
+
+---
+
+## Phase B — DONE
+
+- `transfer_with_fee(amount, expected_fee)` in lib.rs: mint read via
+  `StateWithExtensions::<Mint>` (+ `BaseStateWithExtensions` trait import —
+  `get_extension` is a trait method, NOT inherent), fee =
+  `TransferFeeConfig::calculate_epoch_fee(epoch, amount)`, which returns
+  **`Option<u64>`** in 3.0.5 (checked, mapped to our error — no unwrap).
+  Require arg == computed fee, then CPI
+  `extension::transfer_fee::instruction::transfer_checked_with_fee` with mint
+  writable.
+- `thaw_account`: direct `spl_token_2022::instruction::thaw_account` CPI,
+  freeze-authority signer. Per-account proven: sibling accounts stay frozen.
+- Tests 7/7 green (`docs/test-output.txt`). Negatives: fee mismatch (our
+  FeeMismatch 6003), frozen-sender transfer (token AccountFrozen 0x12),
+  wrong thaw authority.
+
+### Surprises
+
+1. **Token-2022 rejects `mint_to` into a frozen account** (contrary to old
+   lore). Test helper thaws via the program, mints, then re-freezes
+   client-side (`createFreezeAccountInstruction`) — realistic end state.
+2. Fee math: 50 bps of 1_000_000 = **5_000** (I first asserted 50_000 —
+   off-by-10x in the test, not the program; program was always correct).
+3. Anchor 0.30 u64 args must be `new anchor.BN(...)` on the client.
+4. Frozen transfer error surfaces as raw "Account is frozen"/0x12, and
+   anchor sometimes can't translate it — tests accept either form.
+
+### Next — Phase C (resume commands)
+
+```
+~/.avm/bin/anchor-0.30.1 build
+~/.avm/bin/anchor-0.30.1 test
+```
+Phase C: `init_mint_v2` (+PermanentDelegate, +ConfidentialTransferMint with
+`auto_approve_new_accounts=false`), then full confidential transfer lifecycle.
